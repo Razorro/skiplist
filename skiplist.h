@@ -8,6 +8,7 @@ class skiplistNode
 {
 public:
 	skiplistNode(int level, string ele="", long score=0);
+	~skiplistNode();
 
 	string ele_;
 	long score_;

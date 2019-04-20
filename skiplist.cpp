@@ -21,6 +21,15 @@ skiplist::~skiplist()
 {
 	delete gen;
 	delete dis;
+
+	skiplistNode *temp = head;
+	while(temp->forward[0])
+	{
+		skiplistNode *oldNode = temp;
+		temp = temp->forward[0];
+		delete oldNode;
+		oldNode = nullptr;
+	}
 }
 
 unsigned long skiplist::randomLevel()
@@ -32,10 +41,20 @@ unsigned long skiplist::randomLevel()
 }
 
 
-skiplistNode* skiplist::searchKey(int score)
+skiplistNode* skiplist::searchKey(long score, string key)
 {
 	skiplistNode *lookup = head;
-	return nullptr;
+	for(int i=level-1;i>=0;--i)
+	{
+		while(lookup->forward[i] && lookup->forward[i]->score_ < score)
+			lookup = lookup->forward[i];
+	}
+
+	lookup = lookup->forward[0];
+	if(lookup && lookup->ele_ == key && lookup->score_ == score)
+		return lookup;
+	else
+		return nullptr;
 }
 
 void skiplist::insertNode(string key, long score)
@@ -141,4 +160,9 @@ skiplistNode::skiplistNode(int level, string ele, long score)
 		for (int i = 0; i < level; ++i)
 			forward[i] = nullptr;
 	}
+}
+
+skiplistNode::~skiplistNode()
+{
+	delete [] forward;
 }
